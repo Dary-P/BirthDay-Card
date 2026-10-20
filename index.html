@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ucapan Ulang Tahun</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 16px;
+      background: linear-gradient(135deg, #ffb7c5 0%, #ffd6a5 30%, #fff5c3 60%, #d7f9ff 100%);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      filter: blur(25px);
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    body::before {
+      background: rgba(255, 255, 255, 0.45);
+      top: 8%;
+      left: 10%;
+    }
+
+    body::after {
+      background: rgba(255, 143, 171, 0.32);
+      bottom: 8%;
+      right: 12%;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .confetti span {
+      position: absolute;
+      top: -10%;
+      width: 12px;
+      height: 20px;
+      border-radius: 5px;
+      opacity: 0.85;
+      animation: fall linear infinite;
+    }
+
+    .confetti span:nth-child(1) { left: 8%; background: #ff6b81; animation-duration: 7s; }
+    .confetti span:nth-child(2) { left: 18%; background: #ffd166; animation-duration: 9s; }
+    .confetti span:nth-child(3) { left: 30%; background: #7bdff2; animation-duration: 8s; }
+    .confetti span:nth-child(4) { left: 42%; background: #c77dff; animation-duration: 10s; }
+    .confetti span:nth-child(5) { left: 55%; background: #8ac926; animation-duration: 7.5s; }
+    .confetti span:nth-child(6) { left: 68%; background: #ff9f1c; animation-duration: 8.8s; }
+    .confetti span:nth-child(7) { left: 80%; background: #ff85a1; animation-duration: 9.4s; }
+    .confetti span:nth-child(8) { left: 90%; background: #80ed99; animation-duration: 8.2s; }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(8px);
+      padding: 34px 28px 24px;
+      border-radius: 28px;
+      box-shadow: 0 24px 60px rgba(148, 88, 127, 0.2), 0 0 0 8px rgba(255, 255, 255, 0.3);
+      text-align: center;
+      max-width: 620px;
+      width: calc(100% - 32px);
+      animation: fadeIn 1.3s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff8fab, #ffd166);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 18px rgba(255, 143, 171, 0.35);
+    }
+
+    .balloon {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1;
+      margin: 14px 0 10px;
+      animation: float 3s ease-in-out infinite;
+      text-shadow: 0 6px 18px rgba(255, 113, 129, 0.25);
+    }
+
+    .card h1 {
+      margin: 0 0 12px;
+      color: #ff5d8f;
+      font-size: clamp(2rem, 5vw, 2.9rem);
+      letter-spacing: 1px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 1.06rem;
+      color: #4e4b5c;
+      line-height: 1.8;
+    }
+
+    .photo-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .photo-frame {
+      min-width: 0;
+    }
+
+    .photo-frame label {
+      display: block;
+      position: relative;
+      aspect-ratio: 4 / 5;
+      padding: 7px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid rgba(220, 93, 136, 0.18);
+      border-radius: 12px;
+      box-shadow: 0 8px 18px rgba(148, 88, 127, 0.16);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .photo-frame label:hover {
+      transform: translateY(-4px) rotate(-1deg);
+      box-shadow: 0 12px 22px rgba(148, 88, 127, 0.22);
+    }
+
+    .photo-frame:nth-child(2) label {
+      transform: translateY(-7px) rotate(1deg);
+    }
+
+    .photo-frame:nth-child(2) label:hover {
+      transform: translateY(-11px) rotate(0deg);
+    }
+
+    .photo-placeholder,
+    .photo-frame img {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      place-items: center;
+      border-radius: 7px;
+      background: linear-gradient(145deg, #ffe0e8, #fff1cb 55%, #d9f5f2);
+      color: #c6537a;
+      font-size: 2rem;
+      object-fit: cover;
+    }
+
+    .photo-frame [hidden] {
+      display: none;
+    }
+
+    .photo-frame input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .photo-caption {
+      display: block;
+      margin-top: 9px;
+      color: #a74b6d;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 420px) {
+      .card {
+        padding: 28px 18px 22px;
+      }
+
+      .photo-gallery {
+        gap: 9px;
+      }
+
+      .photo-caption {
+        font-size: 0.7rem;
+      }
+    }
+
+    .card .signature {
+      margin-top: 20px;
+      font-weight: 700;
+      color: #dc5d88;
+      font-size: 0.96rem;
+      letter-spacing: 0.08em;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-20vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.8;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="card">
+    <div class="badge">Hari Spesial Carissa</div>
+    <div class="balloon">🎉🎂🎈</div>
+    <h1>Selamat Ulang Tahun, Carissa!</h1>
+    <div class="photo-gallery" aria-label="Galeri foto ulang tahun">
+      <div class="photo-frame">
+        <label for="photo-one" aria-label="Pilih foto pertama">
+          <span class="photo-placeholder" aria-hidden="true" hidden>📷</span>
+          <img src="asset/IMG-20251230-WA0021.jpg" alt="Foto Carissa mengenakan hijab krem dan kacamata">
+        </label>
+        <input id="photo-one" type="file" accept="image/*">
+      </div>
+      <div class="photo-frame">
+        <label for="photo-two" aria-label="Pilih foto kedua">
+          <span class="photo-placeholder" aria-hidden="true" hidden>💖</span>
+          <img src="asset/Screenshot_20231226-185734.png" alt="Foto Carissa dengan filter karakter beruang">
+        </label>
+        <input id="photo-two" type="file" accept="image/*">
+        <span class="photo-caption">Hari istimewa</span>
+      </div>
+      <div class="photo-frame">
+        <label for="photo-three" aria-label="Pilih foto ketiga">
+          <span class="photo-placeholder" aria-hidden="true" hidden>✨</span>
+          <img src="asset/IMG-20260129-WA0021.jpg" alt="Foto Carissa mengenakan seragam dan kacamata">
+        </label>
+        <input id="photo-three" type="file" accept="image/*">
+      </div>
+    </div>
+    <p>
+      Carissa Inayah Putri Heryani, SELAMAT ULANG TAHUN! Semoga setiap langkah dipenuhi kebahagiaan, kesehatan, dan hal-hal baik. Semoga semua impianmu tercapai, senyummu selalu hadir, dan tahun ini membawa banyak kenangan indah. Tetap jadi Ca yang istimewa dan membahagiakan orang-orang di sekitarmu. 💖
+    </p>
+    <div class="signature">Dengan doa, Selamat Ulang Tahun! ✨</div>
+  </div>
+  <script>
+    document.querySelectorAll('.photo-frame input').forEach((input) => {
+      input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+
+        const frame = input.closest('.photo-frame');
+        const image = frame.querySelector('img');
+        const placeholder = frame.querySelector('.photo-placeholder');
+        image.src = URL.createObjectURL(file);
+        image.hidden = false;
+        placeholder.hidden = true;
+      });
+    });
+  </script>
+</body>
+</html>
